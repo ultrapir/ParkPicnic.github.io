@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Ruslan+Display&family=Zilla+Slab:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="icon" href="/flavicon/tent.ico?v=2" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="modal.css">
+    <link rel="stylesheet" href="/css/booking.css">
+    <title>ParkPicnic</title>
+</head>
+<body>
+    <header>
+        <nav class="navbar bg" role="navigation">
+            <a href="/" class="brand" aria-label="На главную">
+                <img class="logo" src="/img/icons8-кемпинг-50.png" alt="ParkPicnic">
+            </a>
+            <button class="burger" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="navMenu">
+                <span class="burger__line"></span>
+            </button>
+            <ul class="links-container">
+                <li class="link-item"><a href="#travel">Галерея</a></li>
+                <li class="link-item"><a href="#explore-section">Прайс</a></li>
+                <li class="link-item"><a href="#services">Услуги</a></li>
+                <li class="link-item"><a href="#booknow">Бронирование</a></li>
+            </ul>
+        </nav>
+
+        <main class="hero-section" id="hero-section">
+            <div class="background">
+                <img src="img/forest.png" class="background-image" alt="hero-section image">
+
+                <div class="grid-slider">
+                    <div class="grid-item hide"></div>
+                    <div class="grid-item hide"></div>
+                    <div class="grid-item hide"></div>
+                    <div class="grid-item hide"></div>
+                    <div class="grid-item hide"></div>
+                    <div class="grid-item hide"></div>
+                </div>
+            </div>
+
+
+            <div class="hero-section-content" data-aos="fade-up">
+                <h1 class="hero-section-title">Парк культуры и отдыха</h1>
+                <p class="hero-section-sub-heading">Идеальное место для семейного отдыха, активных развлечений и ярких мероприятий на свежем воздухе!</p>
+            </div>
+    
+            <img src="img/down arrow.png" class="scroll-down-icon" alt="scroll down indicator">
+        </main>
+    </header>
+
+
+    <section class="explore-section" id="explore-section">
+        <h1 class="section-title" data-aos="fade-up">Окунитесь в мир природы</h1>
+        <p class="section-para" data-aos="fade-up">В нашем потрясающем парке отдыха вы сможете ощутить себя наедине с природой! Вдыхать свежий воздух, находясь в самых живописных уголках.</p>
+
+        <input type="hidden" id="booking-gazebo" name="gazeboId" value="">
+        <div class="muted" id="booking-selected" style="margin:8px 0"></div>
+        <div class="tours-container" id="gazebo-grid">
+            <div class="tour-card" data-aos="fade-up" data-id="1">
+                <img src="img/home_one.png" class="tour-img" alt="Беседка №1">
+                <div class="tour-body">
+                    <h3 class="tour-name">Беседка №1</h3>
+                    <p class="tour-action">Подробнее...</p>
+                </div>
+            </div>
+
+            <div class="tour-card" data-aos="fade-up" data-id="2">
+                <img src="img/home_two.png" class="tour-img" alt="Беседка №2">
+                <div class="tour-body">
+                    <h3 class="tour-name">Беседка №2</h3>
+                    <p class="tour-action">Подробнее...</p>
+                </div>
+            </div>
+
+            <div class="tour-card" data-aos="fade-up" data-id="3">
+                <img src="img/home_three.png" class="tour-img" alt="Беседка №3">
+                <div class="tour-body">
+                    <h3 class="tour-name">Беседка №3</h3>
+                    <p class="tour-action">Подробнее...</p>
+                </div>
+            </div>
+
+            <div class="tour-card" data-aos="fade-up" data-id="4">
+                <img src="img/home_four.png" class="tour-img" alt="Беседка №4">
+                <div class="tour-body">
+                    <h3 class="tour-name">Беседка №4</h3>
+                    <p class="tour-action">Подробнее...</p>
+                </div>
+            </div>
+
+            <div class="tour-card" data-aos="fade-up" data-id="5">
+                <img src="img/home-five.png" class="tour-img" alt="Беседка №5">
+                <div class="tour-body">
+                    <h3 class="tour-name">Беседка №5</h3>
+                    <p class="tour-action">Подробнее...</p>
+                </div>
+            </div>
+
+            <div class="tour-card" data-aos="fade-up" data-id="6">
+                <img src="img/home_six.png" class="tour-img" alt="Беседка №6">
+                <div class="tour-body">
+                    <h3 class="tour-name">Беседка №6</h3>
+                    <p class="tour-action">Подробнее...</p>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <div id="product-modal" aria-hidden="true">
+        <div class="modal-overlay" aria-hidden="true"></div>
+        <div class="modal-card modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <header class="modal-header">
+                <h3 class="modal-title" id="modal-title">—</h3>
+                <button class="modal-close" aria-label="Закрыть" type="image">
+                    <img src="img/icons/icons8-close-48.png" alt="Image Alt Text">
+                </button>
+            </header>
+
+            <section class="gallery">
+                <div id="modal-gallery" class="gallery-main"></div>
+            </section>
+
+            <aside class="details">
+                <div class="price" id="modal-price"></div>
+                <div class="desc" id="modal-desc"></div>
+                <div class="actions">
+                    <button class="btn btn-primary btn-book" type="button" data-gazebo-id="2">Забронировать</button>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    
+
+    <section class="services-section" id="services">
+        <h1 class="section-title" data-aos="fade-up">Почему мы ?</h1>
+        <p class="section-para" data-aos="fade-up">Стоит один раз довериться нам и вы захотите вернуться! </p>
+
+        <div class="serives-grid">
+            <div class="service-card" data-aos="fade-up">
+                <div class="circle"></div>
+                <i class="fa-solid fa-tree card-icon"></i>
+                <p class="service-text">Уединенный отдых в лесу</p>
+            </div>
+            <div class="service-card" data-aos="fade-up">
+                <div class="circle"></div>
+                <i class="fa-solid fa-fire  card-icon"></i>
+                <p class="service-text">Зоны барбекю</p>
+            </div>
+            <div class="service-card" data-aos="fade-up">
+                <div class="circle"></div>
+                <i class="fa-solid fa-gamepad card-icon"></i>
+                <p class="service-text">Площадки для активного отдыха</p>
+            </div>
+            <div class="service-card" data-aos="fade-up">
+                <div class="circle"></div>
+                <i class="fa-solid fa-users card-icon"></i>
+                <p class="service-text">Групповые мероприятия</p>
+            </div>
+        </div>
+
+        <div class="bg-circle"></div>
+
+    </section>
+
+    <section class="gallery-section">
+        <div class="travel-grid" id="travel"></div>
+    </section>
+
+    <section class="book-section" id="booknow">
+        <div class="book-content" data-aos="fade-up">
+            <h1 class="book-now-title">Оставьте заявку прямо сейчас</h1>
+            <p class="book-now-text">Заполните форму бронирования и устройте себе лучшие выходные!</p>
+
+            <button class="book-now">Оставить заявку</button>
+        </div>
+        <div class="bg-circle-2"></div>
+        <img src="img/camp.png" data-aos="fade-up" class="book-now-img" alt="">
+
+
+
+        <!-- Модальное окно бронирования -->
+    <div id="booking-modal" aria-hidden="true">
+        <div class="modal-overlay" aria-hidden="true"></div>
+
+        <div class="modal-card modal-panel booking-card" role="dialog" aria-modal="true" aria-labelledby="booking-title">
+            <header class="modal-header">
+                <h3 class="modal-title" id="booking-title">Бронирование беседки</h3>
+                <button class="modal-close" type="button" aria-label="Закрыть">✕</button>
+            </header>
+
+            <section class="booking-body">
+                <form id="booking-form" class="booking-form" action="/api/book.php" novalidate>
+                    <!-- CSRF и honeypot -->
+                    <!-- <input type="hidden" name="csrf" value="">
+                    <input type="text"   name="website" value="" style="display:none" tabindex="-1" autocomplete="off"> -->
+                    <div class="booking-grid">
+                        <!-- Календарь -->
+                        <div class="calendar-wrapper">
+                            <div class="calendar-header">
+                                <button class="cal-btn cal-prev" type="button" aria-label="Предыдущий месяц">‹</button>
+                                <div class="cal-title" id="cal-title">—</div>
+                                <button class="cal-btn cal-next" type="button" aria-label="Следующий месяц">›</button>
+                            </div>
+
+                            <div class="calendar" id="calendar" aria-label="Календарь выбора даты"></div>
+
+                            <div class="calendar-legend">
+                                <span class="dot available"></span> Доступно
+                                <span class="dot booked"></span> Занято
+                                <span class="dot selected"></span> Выбрано
+                            </div>
+                        </div>
+
+                        <!-- Поля -->
+                        <div class="fields">
+                            <label class="f">
+                                <span>Беседка</span>
+                                <select id="gazebo" name="gazebo" required></select>
+                            </label>
+
+                            <label class="f" for="qty">
+                                <span>Количество</span>
+                                <input id="qty" type="number" min="1" value="1" />
+                            </label>
+                            
+
+                            <label class="f">
+                                <span>Дата</span>
+                                <input id="date" name="date" type="text" placeholder="Выберите дату в календаре" readonly required>
+                            </label>
+
+                            <label class="f">
+                                <span>Ваше имя</span>
+                                <input id="name" name="name" type="text" autocomplete="name" required>
+                            </label>
+
+                            <label class="f">
+                                <span>Телефон</span>
+                                <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" required>
+                            </label>
+
+                            <label class="f">
+                                <span>E‑mail</span>
+                                <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+                            </label>
+
+                            <label class="f">
+                                <span>Комментарий (необязательно)</span>
+                                <textarea id="comment" name="comment" rows="3" placeholder="Пожелания, время прибытия и т.п."></textarea>
+                            </label>
+                        </div>
+                    </div>
+
+                    <input name="website" style="display:none">
+
+                    <div class="actions">
+                        <button class="btn btn-primary" type="submit">Отправить заявку</button>
+                        <button class="btn btn-ghost modal-close" type="button">Отмена</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </section>
+
+    
+
+    <footer class="footer">
+        <img src="img/2.png" class="footer-logo" alt="">
+        <div class="footer-text">
+            <p>Встреча с природой - лучший отдых!</p>
+            <p>Email - support@park.com</p>
+            <p>Phone - 99 88 776655, 99 88 776644</p>
+        </div>
+        <p class="copyright-line">Сайт выполнен учеником TOP - академии ❤️</p>
+    </footer>
+
+
+    
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="app.js"></script>
+    <script src="/js/booking.js"></script>
+    <script src="/js/booking-init.js"></script>
+    <script src="/js/booking-availability.js"></script>
+    <script src="/public/js/render-cards.js"></script>
+    <script defer>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navbar = document.querySelector('.navbar');
+            const burger = document.querySelector('.burger');
+            const links  = document.querySelectorAll('.links-container a');
+
+            if (!navbar || !burger) return;
+
+            
+            burger.addEventListener('click', () => {
+                const opened = navbar.classList.toggle('open');
+                burger.setAttribute('aria-expanded', opened ? 'true' : 'false');
+                document.body.style.overflow = opened ? 'hidden' : '';  // фикс прокрутки фона под меню
+            });
+
+           
+            links.forEach(a => a.addEventListener('click', () => {
+                navbar.classList.remove('open');
+                burger.setAttribute('aria-expanded', 'false');
+                document.body.style.overflow = '';
+            }));
+
+            
+            const mq = window.matchMedia('(min-width: 993px)');
+            mq.addEventListener?.('change', e => {
+                if (e.matches) {
+                    navbar.classList.remove('open');
+                    burger.setAttribute('aria-expanded', 'false');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+    </script>
+    <script src="/js/gallery-carousel.js" defer></script>
+
+</body>
+</html>

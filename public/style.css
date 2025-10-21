@@ -1,0 +1,896 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html{
+    scroll-behavior: smooth;
+}
+
+body{
+    font-family: 'Bebas Neue', sans-serif;
+    background: #161813;
+    overflow-x: hidden;
+}
+
+#booking { 
+    scroll-margin-top: 100px; 
+} 
+
+
+:root{
+  --nav-h: 64px;            
+  --nav-bg: rgba(22,24,19,.92);
+}
+
+
+body{ padding-top: var(--nav-h); }
+
+.brand{ display: inline-flex; align-items: center; gap: 10px; }
+.logo{ height: 36px; margin: 0; transition: background .2s ease, transform .2s ease;}
+.logo:hover{
+    transform: translateY(-3px);
+}
+
+.links-container{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  list-style: none;
+  padding-left: 0;             
+}
+.link-item{ margin: 0; }
+.link-item a{
+  display: inline-block;
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: 10px;
+  transition: background .2s ease, transform .2s ease;
+}
+.link-item a:hover{ background: rgba(255,255,255,.08); transform: translateY(-3px); }
+
+.burger{
+  display: none;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 10px;
+  background: transparent;
+  position: relative;
+  cursor: pointer;
+}
+.burger::before,
+.burger::after,
+.burger .burger__line{
+  content: '';
+  position: absolute;
+  left: 9px;
+  right: 9px;
+  height: 2px;
+  background: #fff;
+  transition: transform .28s ease, opacity .2s ease;
+}
+.burger::before{ top: 13px; }
+.burger .burger__line{ top: 20px; }
+.burger::after{ top: 27px; }
+.navbar.open .burger .burger__line{ opacity: 0; }
+.navbar.open .burger::before{ transform: translateY(7px) rotate(45deg); }
+.navbar.open .burger::after{ transform: translateY(-7px) rotate(-45deg); }
+
+.navbar{
+    font-family: 'Bebas Neue', serif;
+    position: fixed;
+    inset: 0 0 auto 0;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;               
+    background: var(--nav-bg);
+    backdrop-filter: blur(6px);
+    z-index: 1000;
+}
+
+
+/* ------------------------------------------------------------------------------------------------------------------------- */
+
+.hero-section{
+    font-family: 'Bebas Neue', serif;
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), no-repeat center top / cover;
+}
+
+.hero-section-title{
+    font-weight: 300;
+    font-size: 80px;
+    text-align: center;
+    text-transform: uppercase; 
+}
+
+.hero-section-sub-heading{
+    text-align: center;
+    text-transform:none;
+    margin: 20px 0;
+    font-size: 20px;
+}
+
+.scroll-down-icon{
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    animation: down ease 1s infinite;
+}
+
+@keyframes down{
+    from { bottom: 10% }
+    to { bottom: 8% }
+}
+
+/* --------------------------------------------------------------------------------------------------- */
+
+.background{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.background-image{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+}
+
+.background::before, .background::after{
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 50%;
+}
+
+.background::before{
+    top: 0;
+    left: 0;
+    background: var(--gradient-top);
+}
+
+.background::after{
+    bottom: 0;
+    background: var(--gradient-bottom);
+}
+
+.grid-slider{
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+}
+
+.grid-item{
+    width: 100%;
+    height: 100%;
+    background: #000;
+    opacity: 1;
+    transition: .5s;
+}
+
+.grid-item.hide{
+    opacity: 0;
+}
+
+/* --------------------------------------------------------------------------------- */
+
+.explore-section{
+    font-family: 'Bebas Neue', serif;
+    position: relative;
+    width: 100%;
+    padding: 80px 10vw;
+    color: #fff;
+}
+
+.section-title{
+    font-size: 30px;
+    font-weight: 400;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.section-para{
+    width: 50%;
+    min-width: 300px;
+    display: block;
+    margin: 30px auto;
+    text-align: center;
+    line-height: 25px;
+    opacity: 0.6;
+}
+
+.tours-container{
+    position: relative;
+    width: 100%;
+    height: auto !important;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: none !important;
+    grid-auto-rows: 300px;
+    grid-auto-flow: row dense;
+    grid-gap: 20px;
+    align-items: stretch;
+    margin-top: 100px;
+}
+
+
+.tour-card{
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border-radius: 20px;
+    box-shadow: 0;
+    overflow: hidden;
+    padding: 10px;
+    display: flex;
+    align-items: end;
+    cursor: pointer;
+}
+
+
+.tour-card:nth-child(2){
+    grid-row: span 2;
+}
+
+.tour-card:last-child{
+    grid-column: span 2;
+}
+
+.tour-img{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: .5s;
+    z-index: -1;
+}
+
+
+.tour-card:hover .tour-img{
+    opacity: 0.85;
+    transform: scale(1.03);
+}
+
+.tour-name{
+    font-weight: 300;
+}
+
+.tour-action{
+    margin-left: 20px;
+    font-size: 14px;
+    position: relative;
+}
+
+
+.tour-action::before{
+    content: '';
+    position: absolute;
+    left: -20px;
+    top: 2px;
+    background: url('img/price.png');
+    width: 15px;
+    height: 15px;
+    background-size: contain;
+}
+
+/* ---------------------------------------------------------------------------------- */
+
+.services-section{
+    font-family: 'Bebas Neue', serif;
+    color: #fff;
+    padding: 80px 10vw;
+}
+
+.serives-grid{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 20px;
+}
+
+.service-card{
+    margin-top: 100px;
+    width: 100%;
+    height: 250px;
+    border-radius: 20px;
+    border: 1px solid #2D2D2D;
+    background: #161813;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+.card-icon{
+    text-align: center;
+    font-size: 60px;
+    z-index: 1;
+}
+
+.service-text{
+    text-align: center;
+    padding: 0 20px;
+    z-index: 1;
+}
+
+.circle{
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    clip-path: circle(0% at 100% 100%);
+    transition: .5s;
+}
+
+.service-card:nth-child(1) .circle{
+    background: url(img/forest.png);
+    background-size: cover;
+}
+
+.service-card:nth-child(2) .circle{
+    background: url(img/barbeku.png);
+    background-size: cover;
+}
+
+.service-card:nth-child(3) .circle{
+    background: url(img/games.png);
+    background-size: cover;
+}
+
+.service-card:nth-child(4) .circle{
+    background: url(img/group.png);
+    background-size: cover;
+}
+
+.service-card:hover .circle{
+    clip-path: circle(141.4% at 100% 100%);
+}
+
+
+.bg-circle{
+    z-index: -1;
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: var(--sphere-gradient-one);
+    right: -250px;
+}
+
+/* ----------------------------------------------------------------------------- */
+
+.gallery-section{
+    font-family: 'Bebas Neue', serif;
+    color: #fff;
+    padding: 0 10vw;
+    margin-bottom: 100px;
+    margin-top: 100px;
+}
+
+.carousel-gal {
+  position: relative;
+  overflow: hidden;
+}
+
+
+.carousel-gal-track {
+  display: flex;
+  align-items: stretch;
+  transition: transform .4s ease;
+  will-change: transform;
+}
+
+
+
+.carousel-gal-slide {
+  flex: 0 0 auto;
+}
+.carousel-gal-slide .travel-item {
+  margin: 0;
+}
+.carousel-gal-slide img {
+  display: block;
+  width: 580px;
+  height: 300px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.carousel-gal-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(0,0,0,.5);
+  color: #fff;
+  cursor: pointer;
+}
+.carousel-gal-nav:hover { background: rgba(0,0,0,.65); }
+.carousel-gal-nav:disabled { opacity: .4; cursor: default; }
+.carousel-gal-nav.prev-gal { left: 8px; }
+.carousel-gal-nav.next-gal { right: 8px; }
+
+.carousel-gal-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 2;
+}
+.carousel-gal-dots .dot-gal {
+  width: 8px; height: 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.45);
+  border: 0; padding: 0;
+  cursor: pointer;
+}
+.carousel-gal-dots .dot-gal.active { background: #fff; }
+
+
+/* ----------------------------------------------------------------------------- */
+
+.book-section{
+    font-family: 'Bebas Neue', serif;
+    position: relative;
+    display: flex;
+    padding: 0 10vw;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    gap: 30px;
+}
+
+.book-now-img{
+    position: absolute;
+    width: 50%;
+    right: 0;
+}
+
+.book-content{
+    width: 50%;
+    color: #fff;
+}
+
+.book-now-title{
+    font-size: 50px;
+    font-weight: 300;
+    width: 300px;
+}
+
+.book-now-text{
+    width: 300px;
+    opacity: 0.5;
+    line-height: 25px;
+    margin: 30px 0;
+}
+
+.book-now{
+    position: relative;
+    padding: 10px 20px;
+    outline: none;
+    border: none;
+    background: #000;
+    text-transform: capitalize;
+    color: #fff;
+    border-radius: 20px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    font-size: 18px;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.book-now::before{
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -30px;
+    width: 20px;
+    height: 200%;
+    background: #fff;
+    opacity: 0.2;
+    transform: rotate(5deg);
+    transition: .5s;
+}
+
+.book-now:hover::before{
+    left: 100%;
+}
+
+.bg-circle-2{
+    z-index: -1;
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    background:  var(--sphere-gradient-two);
+    left: -125px;
+    bottom: -100px;
+}
+
+.footer{
+    font-family: 'Bebas Neue', serif;
+    width: 100%;
+    padding: 100px 10vw;
+    background: #000;
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    align-items: center;
+    position: relative;
+}
+
+.footer-logo{
+    width: 100px;
+    opacity: 0.3;
+}
+
+.footer-text{
+    color: #fff;
+    opacity: 0.5;
+    font-size: 20px;
+}
+
+.footer-text p{
+    margin: 20px 0;
+}
+
+.copyright-line{
+    width: 100%;
+    background: #000;
+    color: #fff;
+    text-transform: none;
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 10px 0;
+}
+
+/* ----------------------------------------MEDIA-------------------------------------------- */
+
+@media screen and (max-width:1400px){
+   .navbar{
+        height: 50px;
+    }
+
+    .link-item{
+        text-align: center;
+    }
+   
+    .link-item a{
+        padding: 10px;
+        margin: auto;
+        display: block;
+        font-size: 20px;
+    }
+
+    .carousel-gal-slide img {
+        display: block;
+        width: 555px;
+        height: 300px;
+        border-radius: 12px;
+        object-fit: cover;
+    }
+
+    .section-title{
+        font-size: 50px;
+    }
+    .grid-slider{
+        grid-template-rows: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .hero-section-sub-heading{
+        font-size: 16px;
+    }
+    .section-para{
+        width: 100%;
+    }
+    .tours-container{
+        height: 1200px;
+        grid-template-columns: repeat(1, 1fr);
+        grid-template-rows: repeat(6, 1fr);
+    }
+    .tour-card:nth-child(2){
+        grid-row: auto;
+    }
+    .tour-card:last-child{
+        grid-column: span 1;
+    }
+    .tour-card:nth-child(3){
+        grid-row: span 1;
+    }
+    
+
+    .travel-grid{
+        columns: 1;
+    }
+    .book-section{
+        height: auto;
+        padding: 80px 10vw;
+        margin-top: 550px;
+    }
+    .bg-circle{
+        display: none;
+    }
+    .bg-circle-2{
+        z-index: 2;
+    }
+    .book-now-img{
+        width: 100%;
+        opacity: 0.3 !important;
+    }
+    .book-content{
+        width: 100%;
+        z-index: 2;
+        text-align: center;
+    }
+    .book-now-title, .book-now-text{
+        width: 100%;
+    }
+
+    .footer{
+        margin-top: 200px;
+    }
+}
+
+
+
+@media screen and (max-width:1000px){
+
+    
+    .navbar{
+        height: 50px;
+    }
+
+    .link-item{
+        text-align: center;
+        margin-top: 10px;
+    }
+   
+    .link-item a{
+        padding: 10px;
+        margin: auto;
+        display: block;
+    }
+
+    .carousel-gal-slide img {
+        display: block;
+        width: 395px;
+        height: 200px;
+        border-radius: 12px;
+        object-fit: cover;
+    }
+
+    .section-title{
+        font-size: 50px;
+    }
+    .grid-slider{
+        grid-template-rows: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .hero-section-sub-heading{
+        font-size: 16px;
+    }
+    .section-para{
+        width: 100%;
+    }
+    .tours-container{
+        height: 1200px;
+        grid-template-columns: repeat(1, 1fr);
+        grid-template-rows: repeat(6, 1fr);
+    }
+    .tour-card:nth-child(2){
+        grid-row: auto;
+    }
+    .tour-card:last-child{
+        grid-column: span 1;
+    }
+    .tour-card:nth-child(3){
+        grid-row: span 1;
+    }
+    /* .serives-grid{
+        grid-template-columns: repeat(1, 1fr);
+    } */
+
+    
+    .book-section{
+        height: auto;
+        padding: 80px 10vw;
+        margin-top: 400px;
+    }
+    .bg-circle{
+        display: none;
+    }
+    .bg-circle-2{
+        z-index: 2;
+    }
+    .book-now-img{
+        width: 100%;
+        opacity: 0.3 !important;
+    }
+    .book-content{
+        width: 100%;
+        z-index: 2;
+        text-align: center;
+    }
+    .book-now-title, .book-now-text{
+        width: 100%;
+    }
+
+    .footer{
+        margin-top: 100px;
+    }
+}
+
+@media screen and (max-width: 996px){
+  .tours-container{
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+}
+
+
+
+@media screen and (max-width: 640px){
+  .burger{ display: inline-block; }
+
+  .navbar{
+    padding-top: 10px;
+    height: auto;
+  }
+
+  .links-container{
+    position: fixed;
+    top: var(--nav-h);
+    left: 0;
+    right: 0;
+    height: calc(100vh - var(--nav-h));
+    padding: 16px;
+    background: #161813;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-6px);
+    transition: opacity .22s ease, transform .22s ease, visibility 0s .22s;
+    z-index: 999;
+  }
+  .navbar.open .links-container{
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+    transition: opacity .22s ease, transform .22s ease;
+  }
+
+  .link-item a{
+    padding: 14px 14px;
+    border: 1px solid rgba(255,255,255,.08);
+    background: rgba(255,255,255,.03);
+    border-radius: 12px;
+  }
+    
+  #booking, #gallery, #price, #services { scroll-margin-top: calc(var(--nav-h) + 8px); }
+
+  .hero-section-title{
+    font-size: 50px;
+  }
+
+  .carousel-gal-slide img {
+    border-radius: 0;
+   }
+
+  .section-title{
+        font-size: 20px;
+    }
+    .grid-slider{
+        grid-template-rows: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .hero-section-sub-heading{
+        font-size: 16px;
+    }
+    .section-para{
+        width: 100%;
+    }
+    .tours-container{
+        height: 1200px;
+        grid-template-columns: repeat(1, 1fr);
+        grid-template-rows: repeat(6, 1fr);
+    }
+    .tour-card:nth-child(2){
+        grid-row: auto;
+    }
+    .tour-card:last-child{
+        grid-column: span 1;
+    }
+    .tour-card:nth-child(3){
+        grid-row: span 1;
+    }
+    .serives-grid{
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .travel-grid{
+        columns: 1;
+    }
+    .book-section{
+        height: auto;
+        padding: 80px 10vw;
+        margin-top: 50px;
+    }
+    .bg-circle{
+        display: none;
+    }
+    .bg-circle-2{
+        z-index: 2;
+    }
+    .book-now-img{
+        width: 100%;
+        opacity: 0.3 !important;
+    }
+    .book-content{
+        width: 100%;
+        z-index: 2;
+        text-align: center;
+    }
+    .book-now-title, .book-now-text{
+        width: 100%;
+    }
+
+    .footer{
+        margin-top: 100px;
+    }
+}
+
+@media (max-width: 420px){
+  :root{ --nav-h: 60px; }
+  .logo{ height: 32px; }
+  .book-section{
+    padding: 20px;
+  }  
+}
+
+/* ===== Галерея: мобильная карусель ===== */
+

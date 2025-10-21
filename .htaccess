@@ -1,0 +1,30 @@
+# Запретить доступ к конфигам
+<FilesMatch "^(config|init|functions)\.php$">
+  Require all denied
+</FilesMatch>
+
+# MIME для JSON
+<IfModule mod_mime.c>
+  RemoveHandler .json
+  RemoveType .json
+  AddType application/json .json
+</IfModule>
+
+# Запретить прямой доступ в /data
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule ^data/ - [F,L,NC]
+
+# Отдаём статику как есть
+RewriteRule \.(json|css|js|png|jpe?g|gif|svg|webp|ico|woff2?|ttf)$ - [L,NC]
+
+DirectoryIndex index.html index.php
+
+# Не переписывать реальные файлы/папки
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Не трогаем админку и API
+RewriteRule ^(admin|api)/ - [L]
+</IfModule>
