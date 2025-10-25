@@ -28,3 +28,6 @@ RewriteRule ^ - [L]
 # Не трогаем админку и API
 RewriteRule ^(admin|api)/ - [L]
 </IfModule>
+
+# Все остальные запросы через router.php
+RewriteRule ^ router.php [L]
