@@ -330,7 +330,7 @@ include __DIR__ . '/partials/header.php';
   <h3>Фотографии</h3>
 
   
-  <form method="post">
+  <form method="post" style="overflow:auto">
     <?= csrf_input() ?>
     <?php if (!$images): ?>
       <p class="muted">Пока нет фотографий. Добавьте первое фото ниже.</p>
