@@ -1,7 +1,13 @@
 <?php
 $pathUrl = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? '/';
 $pathUrl = str_replace('\\', '/', $pathUrl);
-$path    = rawurldecode($pathUrl);            
+$path    = rawurldecode($pathUrl);  
+
+// Алиасы на создание заявки (оба пути будут работать)
+if ($path === '/api/order-create' || $path === '/api/order-create.json') {
+  require __DIR__ . '/api/order-create.php';
+  return true;
+}
 
 if (strpos($path, '..') !== false) {          
   http_response_code(400); echo 'Bad path'; return true;

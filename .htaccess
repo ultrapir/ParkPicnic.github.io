@@ -1,57 +1,29 @@
-# Запретить доступ к конфигам
-; <FilesMatch "^(config|init|functions)\.php$">
-;   Require all denied
-; </FilesMatch>
-
-# MIME для JSON
-; <IfModule mod_mime.c>
-;   RemoveHandler .json
-;   RemoveType .json
-;   AddType application/json .json
-; </IfModule>
-
-# Запретить прямой доступ в /data
-; <IfModule mod_rewrite.c>
-; RewriteEngine On
-; RewriteRule ^data/ - [F,L,NC]
-
-# Отдаём статику как есть
-; RewriteRule \.(json|css|js|png|jpe?g|gif|svg|webp|ico|woff2?|ttf)$ - [L,NC]
-
-; DirectoryIndex index.html index.php
-
-# Не переписывать реальные файлы/папки
-; RewriteCond %{REQUEST_FILENAME} -f [OR]
-; RewriteCond %{REQUEST_FILENAME} -d
-; RewriteRule ^ - [L]
-
-# Не трогаем админку и API
-; RewriteRule ^(admin|api)/ - [L]
-; </IfModule>
-
-
-# Запрет листинга
+# Отключаем индексацию директорий
 Options -Indexes
 
-# Системные PHP не выдаём наружу
+# MIME для json (RemoveHandler/RemoveType убраны — они часто запрещены)
+<IfModule mod_mime.c>
+  AddType application/json .json
+</IfModule>
+
+# Запрет прямого доступа к служебным PHP-файлам
 <FilesMatch "^(config|init|functions)\.php$">
   Require all denied
 </FilesMatch>
-<Directory "data">
-  Require all denied
-</Directory>
 
-# Правила роутинга
+# Запрет доступа к каталогу /data (через переписывание)
 RewriteEngine On
+RewriteRule ^data/ - [F,L]
 
-# Локальные JSON из /api отдаём напрямую (если существуют)
-RewriteRule ^api/.*\.json$ - [L]
-
-# Не переписываем реальные файлы/папки
+# Если запрашивается реальный файл/папка — отдать как есть
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
+# Не переписывать admin и api — отдать напрямую (в т.ч. /api/*.json)
+RewriteRule ^(admin|api)/ - [L]
 
-# Все остальные запросы через router.php
-RewriteRule ^ router.php [L]
+
+# Точка входа: всё остальное прокидываем в public/
+DirectoryIndex public/index.html index.php index.html
+RewriteRule ^(.*)$ public/$1 [L]
