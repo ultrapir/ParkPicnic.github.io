@@ -21,12 +21,12 @@ session_start();
 
 require __DIR__ . '/functions.php';
 
-// Гарантируем каталог data/
+
 if (!is_dir(__DIR__ . '/data')) {
     mkdir(__DIR__ . '/data', 0775, true);
 }
 
-// Подключаем SQLite
+
 $pdo = new PDO('sqlite:' . $cfg['sqlite']['path'], null, null, [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,

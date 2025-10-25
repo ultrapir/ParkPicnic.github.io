@@ -12,7 +12,7 @@ if ($gazeboId <= 0 || !$date) {
     exit;
 }
 
-// total
+
 $stmt = $pdo->prepare('SELECT stock_total FROM gazebos WHERE id=? AND is_active=1');
 $stmt->execute([$gazeboId]);
 $total = (int)$stmt->fetchColumn();
@@ -22,8 +22,8 @@ if ($total <= 0) {
     exit;
 }
 
-// учёт заявок со статусами, которые «занимают» инвентарь
-$statuses = ['new','confirmed','done']; // canceled НЕ учитываем
+
+$statuses = ['new','confirmed','done']; 
 $in = implode(',', array_fill(0, count($statuses), '?'));
 
 $stmt = $pdo->prepare("SELECT COALESCE(SUM(qty),0) FROM orders WHERE gazebo_id=? AND date=? AND status IN ($in)");

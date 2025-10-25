@@ -1,11 +1,11 @@
 (function(){
   console.log('[availability] init');
 
-  const selGazebo = document.getElementById('bookingGazebo'); // <select>
-  const inpDate   = document.getElementById('bookingDate');   // <input type="date"> или flatpickr input
-  const inpQty    = document.getElementById('bookingQty');    // <input type="number">
-  const infoEl    = document.getElementById('bookingAvailInfo'); // <span> для текста
-  const submitBtn = document.getElementById('bookingSubmit'); // <button>
+  const selGazebo = document.getElementById('bookingGazebo'); 
+  const inpDate   = document.getElementById('bookingDate');   
+  const inpQty    = document.getElementById('bookingQty');    
+  const infoEl    = document.getElementById('bookingAvailInfo'); 
+  const submitBtn = document.getElementById('bookingSubmit'); 
 
   if (!selGazebo || !inpDate || !inpQty || !infoEl || !submitBtn) {
     console.warn('[availability] elements not found, skip wiring');
@@ -43,14 +43,14 @@
     }
   }
 
-  // Опционально: выключаем полностью занятые даты (пример для flatpickr)
+  
   async function disableFullyBookedDates() {
     const gazeboId = parseInt(selGazebo.value || '0', 10);
     if (!gazeboId) return;
 
     try {
       const d = await jsonGet(`/api/availability-dates.php?gazebo_id=${encodeURIComponent(gazeboId)}&days=180`);
-      // Если используете flatpickr:
+      
       if (inpDate._flatpickr && Array.isArray(d.fully_booked)) {
         const disabled = d.fully_booked.slice();
         inpDate._flatpickr.set('disable', disabled);
@@ -63,11 +63,11 @@
   selGazebo.addEventListener('change', () => { updateAvailability(); disableFullyBookedDates(); });
   inpDate.addEventListener('change', () => { updateAvailability(); });
 
-  // Первичная инициализация
+  
   updateAvailability();
   disableFullyBookedDates();
 
-  // На отправке формы гарантируем qty в допустимых пределах
+  
   const form = submitBtn.closest('form');
   if (form) {
     form.addEventListener('submit', async (e) => {

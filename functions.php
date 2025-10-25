@@ -29,7 +29,7 @@ function redirect(string $path) {
     exit;
 }
 
-// Аутентификация
+
 function current_user(): ?array { return $_SESSION['user'] ?? null; }
 function require_login() { if (!current_user()) redirect('admin/auth/login.php'); }
 
@@ -59,11 +59,11 @@ function create_admin(PDO $pdo, string $login, string $password): int {
 function send_mail(string $to, string $subject, string $html, string $text = ''): bool {
     $cfg = require __DIR__ . '/config.php';
 
-    // 1) Лог — оставляем всегда
+    
     $line = sprintf("[%s] To:%s | Subj:%s\n%s\n\n", date('Y-m-d H:i:s'), $to, $subject, $html);
     @file_put_contents($cfg['mail']['log_path'], $line, FILE_APPEND);
 
-    // 2) Реальная отправка (если включена)
+    
     $transport = $cfg['mail']['transport'] ?? 'log';
     if ($transport === 'phpmail') {
         $headers  = "MIME-Version: 1.0\r\n";
@@ -74,7 +74,7 @@ function send_mail(string $to, string $subject, string $html, string $text = '')
         return @mail($to, $encSubj, $html, $headers);
     }
 
-    // Для 'log' просто считаем отправленным
+    
     return true;
 }
 
@@ -87,9 +87,9 @@ function order_statuses(): array {
     ];
 }
 
-// Помощники для миграций SQLite
+
 function sqlite_has_column(PDO $pdo, string $table, string $column): bool {
-    // Простая валидация идентификаторов, чтобы избежать инъекций в PRAGMA
+    
     if (!preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $table)) { throw new InvalidArgumentException('Invalid table name'); }
     if (!preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $column)) { throw new InvalidArgumentException('Invalid column name'); }
     $stmt = $pdo->query('PRAGMA table_info("' . $table . '")');
@@ -108,15 +108,14 @@ function sqlite_ensure_column(PDO $pdo, string $table, string $column, string $d
 
 
 function make_order_request_key(int $gazeboId, string $date, string $phone, int $qty = 1): string {
-    // Окно 30 секунд: один и тот же заказ из той же сессии не дублируется
+    
     $bucket = (int)floor(time() / 30);
     $sid = session_id() ?: '';
     return hash('sha256', implode('|', [$gazeboId, $date, $phone, $qty, $sid, $bucket]));
 }
 
-/**
- * Возвращает ID созданной или уже существующей заявки (по request_key)
- */
+ 
+ 
 function insert_order_idempotent(PDO $pdo, array $data): int {
     $reqKey = make_order_request_key(
         (int)$data['gazebo_id'],
@@ -144,7 +143,6 @@ function insert_order_idempotent(PDO $pdo, array $data): int {
         ':request_key'   => $reqKey,
     ]);
 
-    // Если вставки не было из-за конфликта — найдём существующую
     if ((int)$pdo->lastInsertId() === 0) {
         $q = $pdo->prepare('SELECT id FROM orders WHERE request_key = ? LIMIT 1');
         $q->execute([$reqKey]);
@@ -155,10 +153,7 @@ function insert_order_idempotent(PDO $pdo, array $data): int {
 }
 
 
-/**
- * Сохраняет загруженный файл-изображение в /uploads/<section>/ и возвращает веб‑путь, например: /uploads/gazebos/20250911-010203-ab12cd34.jpg
- * Разрешённые типы: JPEG, PNG, WebP, GIF. Лимит 8 МБ.
- */
+
 
 
 function uploads_cfg(): array {
@@ -205,7 +200,7 @@ function upload_image_save(array $file, string $section = 'gazebos'): string {
     if (!isset($allowed[$mime])) {
         throw new RuntimeException('Недопустимый тип файла');
     }
-    // Дополнительная проверка «это изображение»
+    
     if (@getimagesize($tmp) === false) {
         throw new RuntimeException('Файл не распознан как изображение');
     }
@@ -227,17 +222,15 @@ function upload_image_save(array $file, string $section = 'gazebos'): string {
     }
     @chmod($dest, 0644);
 
-    // Возвращаем веб‑путь, который точно отдается сервером
+    
     return $baseUrl . '/' . trim($section, '/') . '/' . $name;
 }
 
-/**
- * Нормализует $_FILES[...] в список файлов
- */
+
 function files_normalize(array $files): array {
     $norm = [];
     if (!is_array($files['name'])) {
-        // одиночный файл
+        
         return [$files];
     }
     $count = count($files['name']);
@@ -255,12 +248,12 @@ function files_normalize(array $files): array {
 
 
 
-// Инициализация схемы SQLite (идемпотентно)
+
 function ensure_sqlite_schema(PDO $pdo): void {
     $pdo->exec('PRAGMA foreign_keys = ON');
     $pdo->exec('PRAGMA journal_mode = WAL');
 
-    // Пользователи
+    
     $pdo->exec('CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         login TEXT NOT NULL UNIQUE,
@@ -268,7 +261,7 @@ function ensure_sqlite_schema(PDO $pdo): void {
         created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     )');
 
-    // Беседки
+    
     $pdo->exec('CREATE TABLE IF NOT EXISTS gazebos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT NOT NULL,
@@ -281,10 +274,10 @@ function ensure_sqlite_schema(PDO $pdo): void {
         created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TEXT
     )');
-    // На случай старой схемы — добавим недостающие столбцы
+    
     sqlite_ensure_column($pdo, 'gazebos', 'stock_total', 'INTEGER NOT NULL DEFAULT 1');
 
-    // Изображения для беседок (многие-к-одному)
+    
     $pdo->exec('CREATE TABLE IF NOT EXISTS gazebo_images (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         gazebo_id INTEGER NOT NULL,
@@ -298,7 +291,7 @@ function ensure_sqlite_schema(PDO $pdo): void {
     )');
     $pdo->exec('CREATE INDEX IF NOT EXISTS idx_gi_gazebo ON gazebo_images(gazebo_id, sort_order, id)');
 
-    // Публичная галерея (не привязана к беседке)
+    
     $pdo->exec('CREATE TABLE IF NOT EXISTS gallery_images (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         src TEXT NOT NULL,
@@ -309,7 +302,7 @@ function ensure_sqlite_schema(PDO $pdo): void {
         created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     )');
 
-    // Заказы
+    
     $pdo->exec('CREATE TABLE IF NOT EXISTS orders (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         gazebo_id INTEGER,
@@ -324,18 +317,18 @@ function ensure_sqlite_schema(PDO $pdo): void {
         updated_at TEXT,
         FOREIGN KEY(gazebo_id) REFERENCES gazebos(id) ON DELETE SET NULL ON UPDATE CASCADE
     )');
-    // На случай старой схемы
+    
     sqlite_ensure_column($pdo, 'orders', 'qty', 'INTEGER NOT NULL DEFAULT 1');
     $pdo->exec('CREATE INDEX IF NOT EXISTS idx_orders_gazebo_date ON orders(gazebo_id, date)');
 
-    // Контентные блоки
+    
     $pdo->exec('CREATE TABLE IF NOT EXISTS content (
         ckey TEXT PRIMARY KEY,
         cvalue TEXT,
         updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     )');
 
-    // Миграция: перенести gazebos.image_url в gazebo_images как primary, если для беседки ещё нет записей
+    
     $pdo->exec('
         INSERT INTO gazebo_images (gazebo_id, url, alt, sort_order, is_primary, is_active, created_at)
         SELECT g.id, g.image_url, "", 0, 1, 1, CURRENT_TIMESTAMP
@@ -346,7 +339,7 @@ function ensure_sqlite_schema(PDO $pdo): void {
           )
     ');
 
-    // Демо-данные
+    
     $cnt = (int)$pdo->query('SELECT COUNT(*) FROM gazebos')->fetchColumn();
     if ($cnt === 0) {
         $stmt = $pdo->prepare('INSERT INTO gazebos(title, price, description, image_url, is_active, sort_order, stock_total, created_at)
@@ -364,7 +357,7 @@ function ensure_sqlite_schema(PDO $pdo): void {
         $stmt->execute(['/img/gallery/3.jpg', 'Терраса', 'fade-up', 1, 30]);
     }
 
-    // для предотвращения дублей в заявке
+    
     sqlite_ensure_column($pdo, 'orders', 'request_key', 'TEXT');
     $pdo->exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_orders_request_key ON orders(request_key)');
 }

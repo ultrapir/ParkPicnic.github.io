@@ -1,12 +1,12 @@
 'use strict';
 
 (function () {
-  // Инициализация AOS (если подключён)
+ 
   if (window.AOS && typeof window.AOS.init === 'function') {
     window.AOS.init();
   }
 
-  // Убираем #booking из адресной строки
+  
   if (window.location.hash === '#booking') {
     try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
   }
@@ -214,7 +214,7 @@
 
       initCarousel();
 
-      // Обновим/создадим кнопку бронирования
+      
       var details = modal.querySelector('.details');
       var actions = modal.querySelector('.details .actions');
       if (!actions && details) {
@@ -241,7 +241,7 @@
     }
 
     function initCarousel() {
-      // Чистим прежние слушатели
+      
       if (state.carousel && typeof state.carousel.destroy === 'function') state.carousel.destroy();
 
       var track = modal.querySelector('.carousel-track');
@@ -348,7 +348,7 @@
       if (useHistoryBack) { try { history.back(); } catch (e) {} }
     }
 
-    // Делегированный клик по карточкам
+    
     cardsContainer.addEventListener('click', function (e) {
       var card = e.target.closest ? e.target.closest('.tour-card') : null;
       if (!card) return;
@@ -363,7 +363,7 @@
     if (overlay) overlay.addEventListener('click', function () { closeModal(true); });
     if (closeBtn) closeBtn.addEventListener('click', function () { closeModal(true); });
 
-    // Кнопка "Забронировать" внутри модалки
+    
     modal.addEventListener('click', function (e) {
       var btn = e.target.closest ? e.target.closest('.btn-book') : null;
       if (!btn) return;
@@ -380,7 +380,7 @@
       closeModal(true);
     });
 
-    // popstate — восстановление/закрытие модалки
+    
     window.addEventListener('popstate', function (e) {
       var st = e.state;
       if (st && st.modal && st.id) {

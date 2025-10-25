@@ -9,14 +9,14 @@ if (!$id) redirect('/admin/orders.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-  // Если нажата кнопка удаления — удаляем и уходим в список
+  
   if (isset($_POST['delete'])) {
     $stmt = $pdo->prepare('DELETE FROM orders WHERE id=?');
     $stmt->execute([$id]);
     redirect('/admin/orders.php');
   }
 
-  // Иначе — обычное обновление статуса
+  
   $status = $_POST['status'] ?? 'new';
   if (!isset(order_statuses()[$status])) $status = 'new';
   $stmt = $pdo->prepare('UPDATE orders SET status=?, updated_at=datetime("now") WHERE id=?');

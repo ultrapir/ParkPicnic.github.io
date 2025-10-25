@@ -2,12 +2,12 @@
 require_once __DIR__ . '/../init.php';
 require_login();
 
-// Гарантируем уникальность (gazebo_id, url) — защитит от дублей
+
 try {
     $pdo->exec('CREATE UNIQUE INDEX IF NOT EXISTS uq_gazebo_images_gid_url ON gazebo_images(gazebo_id, url)');
 } catch (Throwable $e) {}
 
-// Получаем и проверяем ID
+
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 if (!$id || $id < 1) {
     redirect('/admin/products.php');
@@ -15,7 +15,7 @@ if (!$id || $id < 1) {
 
 $errorMsg = '';
 
-// Валидация изображений (разрешаем http/https и абсолютные пути сайта)
+
 function valid_image_url(?string $url): bool {
     if ($url === null) return false;
     $u = trim($url);
@@ -25,14 +25,14 @@ function valid_image_url(?string $url): bool {
     return false;
 }
 
-// Обновляет gazebos.image_url на текущее primary или первый активный
+
 function update_gazebo_fallback_image(PDO $pdo, int $gazeboId): void {
-    // 1) primary
+    
     $stmt = $pdo->prepare('SELECT url FROM gazebo_images WHERE gazebo_id = ? AND is_active = 1 AND is_primary = 1 ORDER BY id LIMIT 1');
     $stmt->execute([$gazeboId]);
     $url = $stmt->fetchColumn();
 
-    // 2) первый активный, если нет primary
+    
     if (!$url) {
         $stmt = $pdo->prepare('SELECT url FROM gazebo_images WHERE gazebo_id = ? AND is_active = 1 ORDER BY sort_order, id LIMIT 1');
         $stmt->execute([$gazeboId]);
@@ -42,16 +42,16 @@ function update_gazebo_fallback_image(PDO $pdo, int $gazeboId): void {
     $pdo->prepare('UPDATE gazebos SET image_url = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?')->execute([$url, $gazeboId]);
 }
 
-// Обработка POST
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         if (!csrf_check()) {
             throw new RuntimeException('Ошибка безопасности. Обновите страницу и попробуйте снова.');
         }
 
-        // Универсальный роутинг по кнопкам submit
+        
         if (isset($_POST['update_gazebo'])) {
-            // Обновление общей информации о беседке
+           
             $title       = trim((string)($_POST['title'] ?? ''));
             $price       = trim((string)($_POST['price'] ?? ''));
             $description = trim((string)($_POST['description'] ?? ''));
@@ -71,13 +71,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (isset($_POST['delete_gazebo'])) {
-            // Удаление беседки целиком
+            
             $stmt = $pdo->prepare('DELETE FROM gazebos WHERE id = ?');
             $stmt->execute([$id]);
             redirect('/admin/products.php');
         }
 
-        // 2.1 Добавление по URL
+        
 if (isset($_POST['add_image_url'])) {
 
   @file_put_contents(__DIR__.'/../data/upload-debug.log',
@@ -92,7 +92,7 @@ if (isset($_POST['add_image_url'])) {
     $url  = trim((string)($_POST['image_url_new'] ?? ''));
     $sort = (int)($_POST['image_sort_new'] ?? 0);
 
-    // Относительный путь без ведущего "/" считаем невалидным (чтобы не появлялись «пустые превью»)
+    
     if ($url !== '' && !preg_match('~^(https?://|/)~i', $url)) {
         throw new InvalidArgumentException('Некорректный URL (добавьте http(s):// или начните с /)');
     }
@@ -111,7 +111,7 @@ if (isset($_POST['add_image_url'])) {
                               VALUES (?,?,?,?,0,1, CURRENT_TIMESTAMP)')
             ->execute([$id, $url, '', $nextSort]);
 
-        // Если нет обложки — назначим первую активную
+        
         $q = $pdo->prepare('SELECT COUNT(*) FROM gazebo_images WHERE gazebo_id=? AND is_primary=1');
         $q->execute([$id]);
         if ((int)$q->fetchColumn() === 0) {
@@ -127,7 +127,7 @@ if (isset($_POST['add_image_url'])) {
     }
 }
 
-// 2.2 Загрузка файлов
+
 if (isset($_POST['add_image_files'])) {
 
   @file_put_contents(__DIR__.'/../data/upload-debug.log',
@@ -139,11 +139,11 @@ if (isset($_POST['add_image_files'])) {
   FILE_APPEND
 );
 
-    // одноразовый токен против повторной отправки
+    
     $once = (string)($_POST['once'] ?? '');
     $okOnce = $once && isset($_SESSION['upload_once'][$once]);
     if (!$okOnce) {
-      // уже использовали или токен отсутствует — молча выходим
+      
       redirect('/admin/product-edit.php?id=' . $id);
     }
     unset($_SESSION['upload_once'][$once]);
@@ -154,7 +154,7 @@ if (isset($_POST['add_image_files'])) {
         ? files_normalize($_FILES['image_file_new'])
         : [];
 
-    // Фильтруем только реально загруженные файлы
+    
     $files = array_values(array_filter($files, function($f){
         return ($f['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK
             && !empty($f['tmp_name'])
@@ -171,11 +171,11 @@ if (isset($_POST['add_image_files'])) {
             $q = $pdo->prepare('SELECT COALESCE(MAX(sort_order),0) FROM gazebo_images WHERE gazebo_id = ?');
             $q->execute([$id]);
             $nextSort = (int)$q->fetchColumn();
-            $nextSort = $sort !== 0 ? $sort - 10 : $nextSort; // чтобы первый добавленный стал ровно sort
+            $nextSort = $sort !== 0 ? $sort - 10 : $nextSort; 
 
             foreach ($files as $f) {
                 try{
-                    $webPath = upload_image_save($f, 'gazebos'); // проверяет MIME, getimagesize и size
+                    $webPath = upload_image_save($f, 'gazebos'); 
                     $nextSort += 10;
                     $pdo->prepare('INSERT OR IGNORE INTO gazebo_images (gazebo_id, url, alt, sort_order, is_primary, is_active, created_at)
                                           VALUES (?,?,?,?,0,1, CURRENT_TIMESTAMP)')
@@ -186,7 +186,7 @@ if (isset($_POST['add_image_files'])) {
                 }
             }
 
-            // Обложка, если не назначена
+            
             $q = $pdo->prepare('SELECT COUNT(*) FROM gazebo_images WHERE gazebo_id=? AND is_primary=1');
             $q->execute([$id]);
             if ((int)$q->fetchColumn() === 0) {
@@ -208,7 +208,7 @@ if (isset($_POST['add_image_files'])) {
 
 
         if (isset($_POST['make_primary'])) {
-            // Сделать обложкой конкретное фото
+            
             $imgId = (int)$_POST['make_primary'];
             $pdo->beginTransaction();
             $pdo->prepare('UPDATE gazebo_images SET is_primary = 0 WHERE gazebo_id = ?')->execute([$id]);
@@ -219,20 +219,20 @@ if (isset($_POST['add_image_files'])) {
         }
 
         if (isset($_POST['delete_image'])) {
-            // Удалить фото
+            
             $imgId = (int)$_POST['delete_image'];
 
             $pdo->beginTransaction();
 
-            // Узнаем, было ли первичным
+            
             $stmt = $pdo->prepare('SELECT is_primary FROM gazebo_images WHERE id = ? AND gazebo_id = ?');
             $stmt->execute([$imgId, $id]);
             $wasPrimary = (int)$stmt->fetchColumn();
 
-            // Удаляем
+            
             $pdo->prepare('DELETE FROM gazebo_images WHERE id = ? AND gazebo_id = ?')->execute([$imgId, $id]);
 
-            // Если удалили обложку — выберем новую
+            
             if ($wasPrimary === 1) {
                 $pdo->prepare('UPDATE gazebo_images SET is_primary = 0 WHERE gazebo_id = ?')->execute([$id]);
                 $pdo->prepare('UPDATE gazebo_images SET is_primary=1 WHERE id = (SELECT id FROM gazebo_images WHERE gazebo_id = ? AND is_active = 1 ORDER BY sort_order, id LIMIT 1)')
@@ -246,7 +246,7 @@ if (isset($_POST['add_image_files'])) {
         }
 
         if (isset($_POST['save_images'])) {
-            // Массовое сохранение порядка и активности
+            
             $ids   = $_POST['img_id'] ?? [];
             $sorts = $_POST['img_sort'] ?? [];
             $acts  = $_POST['img_active'] ?? [];
@@ -261,7 +261,7 @@ if (isset($_POST['add_image_files'])) {
                     ->execute([$sort, $act, $imgId, $id]);
             }
 
-            // Если текущая обложка стала неактивной — назначим первую активную
+            
             $stmt = $pdo->prepare('SELECT COUNT(*) FROM gazebo_images WHERE gazebo_id = ? AND is_primary = 1 AND is_active = 1');
             $stmt->execute([$id]);
             $primaryActive = (int)$stmt->fetchColumn();
@@ -278,7 +278,7 @@ if (isset($_POST['add_image_files'])) {
             redirect('/admin/product-edit.php?id=' . $id);
         }
 
-        // Если дошли сюда без распознанного действия — молча вернёмся
+        
         redirect('/admin/product-edit.php?id=' . $id);
 
     } catch (Throwable $e) {
@@ -286,7 +286,7 @@ if (isset($_POST['add_image_files'])) {
     }
 }
 
-// Загрузка записи
+
 $stmt = $pdo->prepare('SELECT * FROM gazebos WHERE id = ?');
 $stmt->execute([$id]);
 $item = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -294,7 +294,7 @@ if (!$item) {
     redirect('/admin/products.php');
 }
 
-// Фото беседки
+
 $imgs = $pdo->prepare('SELECT id, url, is_primary, is_active, sort_order FROM gazebo_images WHERE gazebo_id = ? ORDER BY is_primary DESC, sort_order, id');
 $imgs->execute([$id]);
 $images = $imgs->fetchAll(PDO::FETCH_ASSOC);
@@ -307,7 +307,7 @@ include __DIR__ . '/partials/header.php';
   <?php endif; ?>
   <h3>Редактирование беседки #<?= (int)$id ?></h3>
 
-  <!-- Форма общих полей беседки -->
+  
   <form method="post">
     <?= csrf_input() ?>
     <div class="grid">
@@ -329,7 +329,7 @@ include __DIR__ . '/partials/header.php';
 <div class="card" style="max-width:960px; margin-top:16px;">
   <h3>Фотографии</h3>
 
-  <!-- Одна форма на весь список фото: сохранение порядка/статуса, сделать обложкой, удалить -->
+  
   <form method="post">
     <?= csrf_input() ?>
     <?php if (!$images): ?>
@@ -373,7 +373,7 @@ include __DIR__ . '/partials/header.php';
 
   <hr style="border-color:#222; margin:16px 0">
 
-  <!-- Добавить по URL -->
+  
 <form method="post" class="grid" style="grid-template-columns:1fr 160px 140px; gap:8px; align-items:end">
   <?= csrf_input() ?>
   <label>URL нового фото<br>
@@ -383,7 +383,7 @@ include __DIR__ . '/partials/header.php';
   <div><button class="btn" name="add_image_url" value="1">Добавить по URL</button></div>
 </form>
 
-<!-- Загрузить файлы -->
+
 <?php
   $once = bin2hex(random_bytes(16));
   $_SESSION['upload_once'][$once] = time();

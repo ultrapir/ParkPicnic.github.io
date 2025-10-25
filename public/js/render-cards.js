@@ -45,20 +45,20 @@
   }
 
   function goToBooking(id, title){
-    // Сохраняем выбранную беседку в адресной строке (не влияет на скролл)
+    
     try {
         const url = new URL(location.href);
         url.searchParams.set('gazeboId', id);
         history.replaceState(null, '', url);
     } catch(_) {}
 
-    prefillBooking(id, title);  // заполнить
-    scrollToBooking();          // прокрутить
+    prefillBooking(id, title);  
+    scrollToBooking();         
 
     }
 
   function prefillBooking(id, title){
-  // Проставляем в форму
+ 
   const field = document.getElementById('booking-gazebo')
             || document.querySelector('select[name="gazeboId"], [name="gazeboId"], [name="gazebo"]');
   if (field) {
@@ -83,7 +83,7 @@
         if (section && section.scrollIntoView) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-  // Клик по карточке
+  
   grid.addEventListener('click', (e) => {
     const card = e.target.closest('.tour-card');
     if (!card) return;
@@ -92,7 +92,7 @@
     if (id) goToBooking(id, title);
   });
 
-  // Если пришли на страницу уже с ?gazeboId=...
+  
     document.addEventListener('DOMContentLoaded', () => {
         const params = new URLSearchParams(location.search);
         const gid = params.get('gazeboId');

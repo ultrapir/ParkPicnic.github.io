@@ -19,7 +19,7 @@ return [
         'timezone' => 'Europe/Moscow',
     ],
     'uploads' => [
-        'dir' => __DIR__ . '/public/uploads', // абсолютный путь на диске
-        'url' => '/uploads',                  // веб‑путь
+        'dir' => __DIR__ . '/public/uploads', 
+        'url' => '/uploads',                  
     ],
 ];

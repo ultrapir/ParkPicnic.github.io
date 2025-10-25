@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create'])) {
     }
 }
 
-// Список
+
 $rows = $pdo->query('SELECT * FROM gazebos ORDER BY sort_order, id')->fetchAll();
 include __DIR__ . '/partials/header.php';
 ?>

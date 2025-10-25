@@ -49,11 +49,11 @@ db.serialize(() => {
   });
 });
 
-// Валидации
+
 const isDate = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s);
 const toInt = (v) => Number.isFinite(parseInt(v, 10)) ? parseInt(v, 10) : null;
 
-// Транспорт для e‑mail (настраивается окружением)
+
 const MAIL_HOST = process.env.MAIL_HOST;
 const MAIL_PORT = parseInt(process.env.MAIL_PORT || '587', 10);
 const MAIL_USER = process.env.MAIL_USER;
@@ -68,16 +68,16 @@ if (MAIL_HOST && MAIL_USER && MAIL_PASS) {
   });
 }
 
-// Twilio для SMS (опционально)
+
 const TWILIO_SID = process.env.TWILIO_SID;
 const TWILIO_TOKEN = process.env.TWILIO_TOKEN;
-const TWILIO_FROM = process.env.TWILIO_FROM; // отправитель, например +1xxxx
+const TWILIO_FROM = process.env.TWILIO_FROM; 
 let smsClient = null;
 if (TWILIO_SID && TWILIO_TOKEN && TWILIO_FROM) {
   smsClient = twilio(TWILIO_SID, TWILIO_TOKEN);
 }
 
-// API: список беседок
+
 app.get('/api/gazebos', (req, res) => {
   db.all(`SELECT id, name FROM gazebos ORDER BY id ASC`, (err, rows) => {
     if (err) return res.status(500).json({ error: 'DB error' });
@@ -85,11 +85,11 @@ app.get('/api/gazebos', (req, res) => {
   });
 });
 
-// API: занятые даты (по беседке и месяцу)
+
 app.get('/api/booked', (req, res) => {
   const gazebo = toInt(req.query.gazebo);
   const year = toInt(req.query.year);
-  const month1 = toInt(req.query.month); // 1..12
+  const month1 = toInt(req.query.month); 
 
   if (!gazebo || !year || !month1) {
     return res.status(400).json({ error: 'gazebo, year, month are required' });
@@ -109,7 +109,7 @@ app.get('/api/booked', (req, res) => {
   );
 });
 
-// API: создание бронирования
+
 app.post('/api/bookings', (req, res) => {
   const { gazebo_id, date, name, phone, email, comment } = req.body || {};
   const gid = toInt(gazebo_id);
@@ -133,7 +133,7 @@ app.post('/api/bookings', (req, res) => {
         return res.status(500).json({ error: 'DB error' });
       }
 
-      // Отправка подтверждения (не блокируем ответ)
+      
       const bookingId = this.lastID;
       res.status(201).json({ id: bookingId });
 
@@ -145,7 +145,7 @@ app.post('/api/bookings', (req, res) => {
         (comment ? `Комментарий: ${comment}\n` : '') +
         `\nСпасибо, что выбрали нас!`;
 
-      // E‑mail
+      
       if (mailer) {
         mailer.sendMail({
           from: MAIL_USER,
@@ -155,7 +155,7 @@ app.post('/api/bookings', (req, res) => {
         }).catch(console.warn);
       }
 
-      // SMS (при наличии конфигурации; phone должен быть в международном формате)
+      
       if (smsClient) {
         smsClient.messages.create({
           body: `Заявка принята: беседка №${gid}, дата ${date}. Спасибо!`,
@@ -167,7 +167,7 @@ app.post('/api/bookings', (req, res) => {
   );
 });
 
-// Статика/SPA
+
 app.get(/^(?!\/api\/).*/, (req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, 'index.html'));
 });

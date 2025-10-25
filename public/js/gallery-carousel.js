@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // ---------------- Gallery (Carousel, no modal) ----------------
+    
     var galleryContainer = document.getElementById('travel');
     if (!galleryContainer) return;
 

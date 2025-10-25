@@ -5,7 +5,7 @@ if (!is_file($dbPath)) { die("DB not found: $dbPath\n"); }
 $pdo = new PDO('sqlite:' . $dbPath);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-// Добавляем столбец, если его нет
+
 $cols = $pdo->query('PRAGMA table_info(gallery_images)')->fetchAll(PDO::FETCH_ASSOC);
 $has = false;
 foreach ($cols as $c) { if (strcasecmp($c['name'], 'is_primary') === 0) { $has = true; break; } }

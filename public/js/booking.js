@@ -117,7 +117,7 @@
     }
   }
 
-  // загрузка «недоступных» дат на месяц
+  
   async function fetchBooked() {
     state.bookedSet = new Set();
     const gid = Number(gazeboSelect?.value || state.gazebos[0]?.gazeboId || 0);

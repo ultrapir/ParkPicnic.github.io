@@ -1,10 +1,9 @@
 <?php
-// Универсальный роутер для PHP built-in: .json-алиасы, кириллица в путях, статика из /public
 $pathUrl = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? '/';
 $pathUrl = str_replace('\\', '/', $pathUrl);
-$path    = rawurldecode($pathUrl);            // важно для кириллических имён файлов
+$path    = rawurldecode($pathUrl);            
 
-if (strpos($path, '..') !== false) {          // защита от обхода директорий
+if (strpos($path, '..') !== false) {          
   http_response_code(400); echo 'Bad path'; return true;
 }
 
@@ -12,7 +11,6 @@ $root   = __DIR__;
 $public = $root . '/public';
 
 
-// Алиасы .json -> .php для API (читают из БД)
 if ($path === '/api/products.json') {
   header('Content-Type: application/json; charset=utf-8');
   require __DIR__ . '/api/products.php';
@@ -24,7 +22,7 @@ if ($path === '/api/images.json') {
   return true;
 }
 
-// 0) Алиасы API: /api/*.json и корневые *.json → /api/*.php (белый список)
+
 $apiAliases = ['products', 'images'];
 if (preg_match('#^/(?:api/)?([a-z0-9\-]+)\.json$#i', $path, $m)) {
   $name = strtolower($m[1]);
@@ -34,7 +32,7 @@ if (preg_match('#^/(?:api/)?([a-z0-9\-]+)\.json$#i', $path, $m)) {
     return true;
   }
 }
-// Поддержка путей без расширения: /api/products → products.php
+
 if (preg_match('#^/api/([a-z0-9\-]+)$#i', $path, $m)) {
   $name = strtolower($m[1]);
   if (in_array($name, $apiAliases, true)) {
@@ -44,12 +42,12 @@ if (preg_match('#^/api/([a-z0-9\-]+)$#i', $path, $m)) {
   }
 }
 
-// 1) Запрет на /data
+
 if (preg_match('#^/data/#i', $path)) {
   http_response_code(403); echo 'Forbidden'; return true;
 }
 
-// 2) /admin и /api — отдаём из корня проекта
+
 if (preg_match('#^/(admin|api)(/.*)?$#i', $path)) {
   $target = $root . $path;
   if (is_dir($target) && is_file($target . '/index.php')) { require $target . '/index.php'; return true; }
@@ -57,7 +55,7 @@ if (preg_match('#^/(admin|api)(/.*)?$#i', $path)) {
   http_response_code(404); echo 'Not Found'; return true;
 }
 
-// 3) Любая статика из /public (с MIME), включая кириллические имена
+
 $publicFile = $public . $path;
 if (is_dir($publicFile) && is_file($publicFile . '/index.html')) { readfile($publicFile . '/index.html'); return true; }
 if (is_file($publicFile)) {
@@ -74,16 +72,16 @@ if (is_file($publicFile)) {
   return true;
 }
 
-// 4) Корень — public/index.html
+
 if ($path === '/' || $path === '') {
   $index = $public . '/index.html';
   if (is_file($index)) { readfile($index); return true; }
 }
 
-// 5) Любой существующий файл в корне — отдать как есть
+
 if (is_file($root . $path)) return false;
 
-// 6) 404
+
 http_response_code(404);
 echo 'Not Found';
 return true;

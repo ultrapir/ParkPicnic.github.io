@@ -15,17 +15,17 @@ try {
         exit;
     }
 
-    // YYYY-MM-DD валидация
+    
     $re = '/^\d{4}-\d{2}-\d{2}$/';
     if (!preg_match($re, $start) || !preg_match($re, $end)) {
-        // дефолт: текущий месяц
+       
         $first = new DateTime('first day of this month 00:00:00');
         $last  = new DateTime('last day of this month 00:00:00');
         $start = $first->format('Y-m-d');
         $end   = $last->format('Y-m-d');
     }
 
-    // Ищем общий лимит беседок
+    
     $stmt = $pdo->prepare('SELECT stock_total FROM gazebos WHERE id = ? AND is_active = 1');
     $stmt->execute([$gazeboId]);
     $total = (int)$stmt->fetchColumn();
@@ -35,7 +35,7 @@ try {
         exit;
     }
 
-    // Суммы бронирований по дням
+    
     $statuses = ['new','confirmed','done'];
     $in = implode(',', array_fill(0, count($statuses), '?'));
 
@@ -57,7 +57,7 @@ try {
         $bookedByDate[$ymd] = $booked;
     }
 
-    // Пройдём весь диапазон, посчитаем доступность
+    
     $cur = new DateTime($start);
     $last = new DateTime($end);
     while ($cur <= $last) {
